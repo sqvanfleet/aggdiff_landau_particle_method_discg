@@ -33,15 +33,35 @@ at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4
 ## Project discription
 
 1. `The particle.m or particle_method_2d_parallel.m` scripts begin by defining several parameters including:
-
-- `n_list` which is a matrix whose elements are how many particles you want to use.  The entries of n_list correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  For example,
-```matlab
-n_list = [60,70,80,90,100]
-```
-means that the particle solution will be computed for $60^d, 70^d, 80^d, 90^d, 100^d$ particles.
-
-- 'Xmax' gives the computational domain which is the hypercube centered at the origin $[\mbox{Xmax},\mbox{Xmax}]^d$.
-
+    - `n_list` which is a matrix whose elements are how many particles you want to use.  The entries of         n_list correspond to different values of $M$ from the paper, making the total number of particles 
+    $M^d$,    where $d$ is the number of spatial dimensions.  For example,
+      ```matlab
+      n_list = [60,70,80,90,100];
+      ```
+      means that the particle solution will be computed for $60^d, 70^d, 80^d, 90^d, 100^d$ particles.
+    - 'Xmax' or 'Vmax' gives the computational domain which is the hypercube centered at the origin               
+    $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d.
+    - `dx` or `dv` is cell length so that the cell volume is $dx^d$ or $dv^d$.
+    - The particle locations are initialized at the cell centers and for 1D examples we have
+    ```matlab
+    x = (-Xmax+dx/2):dx:(Xmax-dx/2);
+    ```
+    and for 2D examples we use
+   ```matlab
+   v = (-Vmax+dv/2):dv:(Vmax-dv/2);
+   [vx,vy] = ndgrid(v);
+   Vx = vx(:);
+   Vy = vy(:);
+   ```
+   to create two arrays `Vx` and `Vy` which contain the corrdinates of the particles the $x$ and $y$ 
+   direction.
+   - `t0` is the initial time.
+   - `f0` are the initial conditions which are computed using the `exact.m`, 
+   `exact_2d.m`, or `non_bkw_initial_conditions.m` functions.
+   - `w` are the particle weights and they are initialized using the midpoint    rule.
+   - 
+    
+    
 
 
 
