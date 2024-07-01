@@ -54,9 +54,8 @@ at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4
    to create two arrays `Vx` and `Vy` which contain the corrdinates of the particles the $x$ and $y$ 
    direction.
    - `t0` is the initial time.
-   - `f0` are the initial conditions which are computed using the `exact.m`, 
-   `exact_2d.m`, or `non_bkw_initial_conditions.m` functions.
-   - `w` are the particle weights and they are initialized using the midpoint    rule.
+   - `f0` or `f_initial` are the initial conditions which are computed using the `exact.m`, `exact_2d.m`, or `non_bkw_initial_conditions.m` functions.  
+   - `w` are the particle weights and they are initialized using the midpoint rule.  In the 2D examples `W = w(:)` flattens the `w` array so that `W` is the same size as the `Vx` and `Vy` arrays. 
    - To create the "blob solution" (equation 4.1), the reconstruction mesh is created.  For 1D exampels
    ```matlab
    Nr = n;
@@ -78,7 +77,11 @@ at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4
 ```matlab
 epsilon = 4*(0.4*(dv)^0.99)^2;
 ```
-   - The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p)$$.  In the following block of code the `psi_1d.m` or `psi_2d.m` is used as the mollifier function.
+   - The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p)$$.  In the following block of code the `psi_1d.m` or `psi_2d.m` is used as the mollifier function.  In one dimension the initial particle method solution is computed with
+```matlab
+ = zeros(1,Nr);
+
+```
    
     
     
