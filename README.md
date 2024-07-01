@@ -32,13 +32,11 @@ at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4
 
 ## Project discription
 
-1. `The particle.m or particle_method_2d_parallel.m` scripts begin by defining several parameters including:
-    - `n_list` which is a matrix whose elements are how many particles you want to use.  The entries of         n_list correspond to different values of $M$ from the paper, making the total number of particles 
-    $M^d$,    where $d$ is the number of spatial dimensions.  For example,
-      ```matlab
-      n_list = [60,70,80,90,100];
-      ```
-      means that the particle solution will be computed for $60^d, 70^d, 80^d, 90^d, 100^d$ particles.
+1. The `particle_method.m` or `particle_method_2d_parallel.m` scripts begin by defining several parameters including:
+    - `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outer most loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
+    ```matlab
+    n = n_list(alpha);
+    ```
     - 'Xmax' or 'Vmax' gives the computational domain which is the hypercube centered at the origin               
     $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d.
     - `dx` or `dv` is cell length so that the cell volume is $dx^d$ or $dv^d$.
@@ -59,7 +57,29 @@ at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4
    - `f0` are the initial conditions which are computed using the `exact.m`, 
    `exact_2d.m`, or `non_bkw_initial_conditions.m` functions.
    - `w` are the particle weights and they are initialized using the midpoint    rule.
-   - 
+   - To create the "blob solution" (equation 4.1), the reconstruction mesh is created.  For 1D exampels
+   ```matlab
+   Nr = n;
+   dxr = 2*Xmax/n; 
+   xr = (-Xmax+dxr/2):dxr:(Xmax-dxr/2); 
+   ```
+   
+   and for 2D examples
+   ```matlab
+   Nr = n;
+   dvr = 2*Vmax/Nr;
+   vr = (-Vmax+dvr/2):dvr:(Vmax-dvr/2); 
+   [vrx,vry] = ndgrid(vr);
+   Vrx = vrx(:);
+   Vry = vry(:);
+   ```
+   Creating this reference mesh is required to compute the errors or plot the blob solution.
+   - Once the meshsize `dx` or `dv` is choses the regularization parameter $\epsilon$ is chosen
+```matlab
+epsilon = 4*(0.4*(dv)^0.99)^2;
+```
+   - The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p)$$.  In the following block of code the `psi_1d.m` or `psi_2d.m` is used as the mollifier function.
+   
     
     
 
