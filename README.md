@@ -24,3 +24,18 @@ and the .m files:
 4. plots.m
 5. exact.m or exact_2d.m or non_bkw_initial_conditions.m
 6. lgwt.m
+
+## MATLAB requirements
+
+All of the files in this repository were tested on MATLAB version R2022b.  The examples coressponding to the Landau equation require the [Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html), but can be modified to be used in serial.  Each directory listed above contains a lgwt.m file that can be found 
+at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4540-legendre-gauss-quadrature-weights-and-nodes).
+
+## Project discription
+
+1. The particle.m or particle_method_2d_parallel.m scripts begin by defining several parameters including:
+
+n_list which is an 
+
+
+
+
