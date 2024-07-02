@@ -41,12 +41,12 @@ All of the files in this repository were tested on MATLAB version R2022b.  The e
 ## Project discription
 
 1. The `particle_method.m` or `particle_method_2d_parallel.m` scripts begin by defining several parameters including:
-    - `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outer most loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
+    - `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of this array are chosen by the user.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outer most loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
     ```matlab
     n = n_list(alpha);
     ```
     - `Xmax` or `Vmax` gives the computational domain which is the hypercube centered at the origin               
-    $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d$. 
+    $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d$. These variables are chosen by the user.
     - `dx` or `dv` is cell length so that the cell volume is $dx^d$ or $dv^d$, and is computed with
     ```matlab
     dx = 2*Xmax/n
@@ -67,7 +67,7 @@ All of the files in this repository were tested on MATLAB version R2022b.  The e
     ```
     to create two arrays `Vx` and `Vy` which contain the corrdinates of the particles the $x$ and $y$ 
     direction.
-    - `t0` is the initial time.
+    - `t0` is the initial time and chosen by the user.
     - `f0` or `f_initial` are the initial conditions which are computed using the `exact.m`, `exact_2d.m`, or `non_bkw_initial_conditions.m` functions.  
     - `w` are the particle weights and they are initialized using the midpoint rule.  In the 2D examples `W = w(:)` flattens the `w` array so that `W` is the same size as the `Vx` and `Vy` arrays. 
     - To create the "blob solution" (equation 4.1), the reconstruction mesh is created.  For 1D exampels
@@ -87,19 +87,36 @@ All of the files in this repository were tested on MATLAB version R2022b.  The e
    Vry = vry(:);
    ```
    Creating this reference mesh is required to compute the errors or plot the blob solution.
-   - Once the meshsize `dx` or `dv` is choses the regularization parameter $\epsilon$ is chosen
+   - Once the meshsize `dx` or `dv` is choses the regularization parameter $\epsilon$ is chosen to be
     ```matlab
     epsilon = 4*(0.4*(dv)^0.99)^2;
     ```
-   - The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p)$$.  In the following block of code the `psi_1d.m` or `psi_2d.m` is used as the     mollifier function.  In 1D the initial particle method solution is computed with
+   - The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p)$$.  In the following block of code     the `psi_1d.m` or `psi_2d.m` is used as the mollifier function.  In 1D the initial particle method solution is computed with
     ```matlab
     f = zeros(1,Nr);
     for i = 1:Nr
-        f(i) = sum(w.*psi_1d(x-xr(i),epsilon));
+        f(i) = sum(w.*psi_1d(xr(i)-x,epsilon));
     end
     ```
-   
-    
+    and in 2D
+    ```matlab
+    parfor i = 1:Nr
+        for j = 1:Nr
+            f(i,j) = sum(W.*psi_2d(vrx(i,j)-Vx,vry(i,j)-Vy,epsilon));
+        end
+    end
+    ```
+    - `tmax` is the final time and is chosen by the user.
+    - `dt` is the time step and is chosen by the user.
+    - `Nt` is the number of time steps
+      ```matlab
+      Nt = round((tmax-t0)/dt);
+      ```
+    - `error_list` is an array that stores several quantities at each time step such as errors, mass, momentum, kinetic energy,
+       energy, the dissipation term, fisher energy, and how many fixed point iterations were required for the relative error to
+       be less than the given tolerance.
+    - `max_iter` is the maximum amount of iterations the fixed point iteration can preform and is chosen by the user.
+    - `tol` is the tolerence used in the fixed point iteration and is chosen by the user.
     
 
 
