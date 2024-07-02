@@ -46,7 +46,7 @@ All of the files in this repository were tested on MATLAB version R2022b.  The e
     n = n_list(alpha);
     ```
     - 'Xmax' or 'Vmax' gives the computational domain which is the hypercube centered at the origin               
-    $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d.
+    $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d$.
     - `dx` or `dv` is cell length so that the cell volume is $dx^d$ or $dv^d$.
     - The particle locations are initialized at the cell centers and for 1D examples we have
     ```matlab
