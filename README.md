@@ -1,7 +1,9 @@
 # Fully discrete energy-dissipative and conservative discrete gradient particle methods for a class of continuity equations
 This repository includes the MATLAB code for each numerical example given in section 4 of 
-*insert paper link*.  The goal is that any reader may reproduce the results shown for each example.  
+[this paper](https://arxiv.org/abs/2407.00533).  The goal is that any reader may reproduce the results shown for each example.  
+
 ## Contents 
+
 There are five directories in this repository, four of them are aggregation-diffusion equation examples:
 1. `particle_method_1D_heat_equation_discrete_gradient`
 2. `particle_method_1D_porous_medium_discrete_gradient`
