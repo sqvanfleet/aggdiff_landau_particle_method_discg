@@ -2,6 +2,9 @@
 This repository includes the MATLAB code for each numerical example given in section 4 of 
 [this paper](https://arxiv.org/abs/2407.00533).  The goal is that any reader may reproduce the results shown for each example.  
 
+## Collaborators 
+
+
 ## Contents 
 
 There are five directories in this repository, four of them are aggregation-diffusion equation examples, which correspond to examples 4.1 - 4.4:
@@ -20,17 +23,20 @@ Each of the six directories listed above contain two subdirecties:
 2. `Data` this directory stores all of the data saved from the `particle_method.m` or `particle_method_2d_parallel.m` file
 
 and the .m files:
-1. `particle_method.m or particle_method_2d_parallel.m`
-2. `gpsi_1d.m or gpsi_2d.m`
-3. `right_hand_side.m or right_hand_side_parallel.m`
-4. `plots.m`
-5. `exact.m or exact_2d.m or non_bkw_initial_conditions.m`
-6. `lgwt.m`
+1. `particle_method.m or particle_method_2d_parallel.m` the main script that preforms the computations and saves data to the `Data` directory
+    that is then analyzed with the `plots.m` file
+3. `gpsi_1d.m or gpsi_2d.m` functions for the mollifier funtion $\varphi_{\varepsilon}(\boldsymbol{x})$
+4. `right_hand_side.m or right_hand_side_parallel.m` a matlab function that computes the right hand side of the fixed point
+   iteration method that results from the discrete gradient discretization.  
+5. `plots.m` takes data from `Data` and produces pdf plots that are saved in `Plots`
+6. `exact.m or exact_2d.m or non_bkw_initial_conditions.m` functions for the exact solution for the given example or for example 4.6
+   a function for the initial conditions
+8. `lgwt.m` a function that returns the wights and nodes required for the Gauss-Legendre quadrature.  This can be downloaded at
+   at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4540-legendre-gauss-quadrature-weights-and-nodes).
 
 ## MATLAB requirements
 
-All of the files in this repository were tested on MATLAB version R2022b.  The examples coressponding to the Landau equation require the [Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html), but can be modified to be used in serial.  Each directory listed above contains a lgwt.m file that can be found 
-at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4540-legendre-gauss-quadrature-weights-and-nodes).
+All of the files in this repository were tested on MATLAB version R2022b.  The examples coressponding to the Landau equation require the [Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html), but can be modified to be used in serial. 
 
 ## Project discription
 
