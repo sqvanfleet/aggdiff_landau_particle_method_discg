@@ -4,20 +4,20 @@ This repository includes the MATLAB code for each numerical example given in sec
 
 ## Contents 
 
-There are five directories in this repository, four of them are aggregation-diffusion equation examples:
-1. `particle_method_1D_heat_equation_discrete_gradient`
-2. `particle_method_1D_porous_medium_discrete_gradient`
-3. `particle_method_1D_linear_fokker_planck_discrete_gradient`
-4. `particle_method_1D_non_local_fokker_planck_discrete_gradient`
+There are five directories in this repository, four of them are aggregation-diffusion equation examples, which correspond to examples 4.1 - 4.4:
+1. `particle_method_1D_heat_equation_discrete_gradient` (example 4.1)
+2. `particle_method_1D_porous_medium_discrete_gradient` (example 4.2)
+3. `particle_method_1D_linear_fokker_planck_discrete_gradient` (example 4.3)
+4. `particle_method_1D_non_local_fokker_planck_discrete_gradient` (example 4.4)
 
-The fifth directory Discrete_Gradient_Symmetric_reg, contains two subdirectories
+The fifth directory Discrete_Gradient_Symmetric_reg, contains two subdirectories, which correspond to examples 4.5 and 4.6:
 
-1. `Discrete_Gradient_Symmetric_reg`
-2. `Anisotropic_solution_with_Coulomb_potential`
+1. `Discrete_Gradient_Symmetric_reg` (example 4.5)
+2. `Anisotropic_solution_with_Coulomb_potential` (example 4.6)
 
 Each of the six directories listed above contain two subdirecties:
-1. `Plots`
-2. `Data`
+1. `Plots` this directory stores all the plots created by the `plots.m` file 
+2. `Data` this directory stores all of the data saved from the `particle_method.m` or `particle_method_2d_parallel.m` file
 
 and the .m files:
 1. `particle_method.m or particle_method_2d_parallel.m`
