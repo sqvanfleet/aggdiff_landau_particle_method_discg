@@ -3,6 +3,8 @@ This repository includes the MATLAB code for each numerical example given in sec
 [this paper](https://arxiv.org/abs/2407.00533).  The goal is that any reader may reproduce the results shown for each example.  
 
 ## Collaborators 
+- Jingwei Hu (https://amath.washington.edu/people/jingwei-hu)
+- Andy Wan (https://appliedmath.ucmerced.edu/content/andy-wan)
 
 
 ## Contents 
