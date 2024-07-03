@@ -93,7 +93,13 @@ Creating this reference mesh is required to compute the errors or plot the blob 
 ```matlab
 epsilon = 4*(0.4*(dv)^0.99)^2;
 ```
-- The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p)$$.  In the following block of code     the `psi_1d.m` or `psi_2d.m` is used as the mollifier function.  In 1D the initial particle method solution is computed with
+- The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p).$$
+###   The `psi_1d.m` and `psi_2d.m` functions
+- The arguments for the `psi_1d` are `x` and `eps` and for `psi_2d` they are `vx`, `vy`, and `eps`.
+- These funtions return an array the same size as `x` or `vx` and `vy`.  Each entry of the retuned array is the mollifier function
+  $$\varphi_{\varepsilon}(\boldsymbol{x}) = \frac{1}{2 \pi \varepsilon}\exp{\left(\frac{-|\boldsymbol{x}^2|}{2 \varepsilon}\right)},$$
+  evauluated at the corresponding element of `x` or `vx` and `vy` with the parameter `\varepsilon`.
+  
 ```matlab
 f = zeros(1,Nr);
 for i = 1:Nr
