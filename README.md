@@ -42,11 +42,22 @@ All of the files in this repository were tested on MATLAB version R2022b.  The e
 
 ### `particle_method.m` or `particle_method_2d_parallel.m` scripts
 
+#### Parameters, initialization, and mesh generation
+
 - The `particle_method.m` or `particle_method_2d_parallel.m` scripts begin by defining several parameters including:
 - `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of this array are chosen by the user.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outer most loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
 ```matlab
 n = n_list(alpha);
 ```
+- For the 2D examples,
+```matlab
+Np = n^2
+```
+is the number of particles.  
+
+- Landau equation examples have two additional parameters `gamma` and `C_gamma`, which are parameters representing the collision kernal 
+$$a_{ij}(\boldsymbol{x})=C|\boldsymbol{x}|^{\gamma}(|\boldsymbol{x}|^2\delta_{ij}-x_ix_j)$$
+
 - `Xmax` or `Vmax` gives the computational domain which is the hypercube centered at the origin               
 $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d$. These variables are chosen by the user.
 - `dx` or `dv` is cell length so that the cell volume is $dx^d$ or $dv^d$, and is computed with
@@ -98,7 +109,7 @@ epsilon = 4*(0.4*(dv)^0.99)^2;
 - The arguments for the `psi_1d` are `x` and `eps` and for `psi_2d` they are `vx`, `vy`, and `eps`.
 - These funtions return an array the same size as `x` or `vx` and `vy`.  Each entry of the retuned array is the mollifier function
   $$\varphi_{\varepsilon}(\boldsymbol{x}) = \frac{1}{2 \pi \varepsilon}\exp{\left(\frac{-|\boldsymbol{x}^2|}{2 \varepsilon}\right)},$$
-  evauluated at the corresponding element of `x` or `vx` and `vy` with the parameter `\varepsilon`.
+  evauluated at the corresponding element of `x` or `vx` and `vy` with the parameter `eps`.
   
 ```matlab
 f = zeros(1,Nr);
@@ -125,6 +136,17 @@ end
    be less than the given tolerance.
 - `max_iter` is the maximum amount of iterations the fixed point iteration can preform and is chosen by the user.
 - `tol` is the tolerence used in the fixed point iteration and is chosen by the user.
+
+#### For loop in time
+
+- The for loop in time uses `nt` as the loop variable and goes from 1 to `Nt`
+  
+- `time` represents the current time
+```matlab
+time = t0+dt*nt
+```
+- Next, a forward Euler step is calculated and used for the initial guess in the fixed point iteration
+
     
 
 
