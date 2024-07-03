@@ -55,6 +55,8 @@ Np = n^2
 ```
 is the number of particles.  
 
+- The porous medium example uses an additional parameter `m` which is the constant from the porous medium equation.
+
 - Landau equation examples have two additional parameters `gamma` and `C_gamma`, which are parameters representing the collision kernal 
 $$a_{ij}(\boldsymbol{x})=C|\boldsymbol{x}|^{\gamma}(|\boldsymbol{x}|^2\delta_{ij}-x_ix_j)$$
 
@@ -105,8 +107,13 @@ Creating this reference mesh is required to compute the errors or plot the blob 
 epsilon = 4*(0.4*(dv)^0.99)^2;
 ```
 - The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p).$$
-###   The `psi_1d.m` and `psi_2d.m` functions
-- The arguments for the `psi_1d` are `x` and `eps` and for `psi_2d` they are `vx`, `vy`, and `eps`.
+####   The `psi_1d` and `psi_2d` functions
+- The arguments for the `psi_1d` are
+    - `x` represents the 1D mesh
+    - `eps` which represents the regularization parameter
+- The arguments for `psi_2d` are
+    - `vx`, `vy`, represent the 2D mesh
+    - `eps` represents the regularization parameter.
 - These funtions return an array the same size as `x` or `vx` and `vy`.  Each entry of the retuned array is the mollifier function
   $$\varphi_{\varepsilon}(\boldsymbol{x}) = \frac{1}{2 \pi \varepsilon}\exp{\left(\frac{-|\boldsymbol{x}^2|}{2 \varepsilon}\right)},$$
   evauluated at the corresponding element of `x` or `vx` and `vy` with the parameter `eps`.
@@ -145,7 +152,37 @@ end
 ```matlab
 time = t0+dt*nt
 ```
-- Next, a forward Euler step is calculated and used for the initial guess in the fixed point iteration
+
+- The next for loop is the loop that preforms fixed point iteration that approximates the solution to the
+  system resulting from the discrete gradient integrator.  This loop variable is `i` and goes from 1 to `max_iter` and represents the
+  index of the fixed point iteration
+
+#### `right_hand_side` or `right_hand_side_parallel` functions
+
+
+- The arguments for the `right_hand_side` function are
+    - `w` represents the 1D wights 
+    - `x` represents the 1D particle logations at the fixed point iteration `i`
+    - `x_new` represents the particle locations at the fixed point iteration `i+1`
+    - `xr` represents the 1D reference mesh
+    - `dx` is the length of the reference mesh elements.  
+    - `epsilon` is the regularization parameter
+    - `n` is the number of particles
+    - the `right_hand_side` function in the `particle_method_1D_porous_medium_discrete_gradient` uses an additional argument `m` and represents the constant from the porous medium equation.
+
+- The arguments for the `right_hand_side_parallel` function are
+    - `W` represents the particle weights
+    - `Vx` represents the $x$ coordinates of the particle locations at the fixed point iteration `i`
+    - `Vy` represents the $y$ coordinates of the particle locations at the fixed point iteration `i`
+    - `Vx_new` represents the $x$ coordinates of the particle locations at the fixed point iteration `i+1`
+    - `Vy_new` represents the $y$ coordinates of the particle locations at the fixed point iteration `i+1`
+    - `Vrx` represents the $x$ coordinates of the 2D reference mesh 
+    - `Vry` represents the $y$ coordinates of the 2D reference mesh 
+    - `dv` represents the length of the reference mesh element making the element size `dv^2`
+    - `epsilon` is the regularization parameter
+    - `C_gamma` is the $C$ parameter from the Landau equation 
+    - `gamma` is the $gamma$ parameter from the Landau equation
+    - `Np` is the number of particles
 
     
 
