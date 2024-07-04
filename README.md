@@ -118,7 +118,7 @@ epsilon = 4*(0.4*(dv)^0.99)^2;
     - `eps` represents the regularization parameter.
 - These funtions return an array the same size as `x` or `vx` and `vy`.  Each entry of the retuned array is the mollifier function
   $$\varphi_{\varepsilon}(\boldsymbol{x}) = \frac{1}{2 \pi \varepsilon}\exp{\left(\frac{-|\boldsymbol{x}^2|}{2 \varepsilon}\right)},$$
-  evauluated at the corresponding element of `x` or `vx` and `vy` with the parameter `eps`.
+  evauluated at the corresponding entry of `x` or `vx` and `vy` with the parameter `eps`.
   
 ```matlab
 f = zeros(1,Nr);
@@ -161,7 +161,6 @@ time = t0+dt*nt
 
 #### `right_hand_side` or `right_hand_side_parallel` functions
 
-
 - The arguments for the `right_hand_side` function are
     - `w` represents the 1D wights 
     - `x` represents the 1D particle logations at the fixed point iteration `i`
@@ -171,6 +170,10 @@ time = t0+dt*nt
     - `epsilon` is the regularization parameter
     - `n` is the number of particles
     - the `right_hand_side` function in the `particle_method_1D_porous_medium_discrete_gradient` uses an additional argument `m` and represents the constant from the porous medium equation.
+      
+- The output is an array `gF` that computes the discrete gradient
+  $$-\frac{1}{w_p}\nabla_{\boldsymbol{x}_p}\overline{E_A^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{A}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
+  and is approximated with a with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
 
 - The arguments for the `right_hand_side_parallel` function are
     - `W` represents the particle weights
