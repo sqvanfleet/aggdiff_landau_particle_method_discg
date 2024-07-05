@@ -48,13 +48,13 @@ All of the files in this repository were tested on MATLAB version R2022b.  The e
 
 - The `particle_method.m` or `particle_method_2d_parallel.m` scripts begin by defining several parameters including:
 - `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of this array are chosen by the user.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outer most loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
-```matlab
-n = n_list(alpha);
-```
+    ```matlab
+    n = n_list(alpha);
+    ```
 - For the 2D examples,
-```matlab
-Np = n^2
-```
+    ```matlab
+    Np = n^2
+    ```
 is the number of particles.  
 
 - The porous medium example uses an additional parameter `m` which is the constant from the porous medium equation.
@@ -65,49 +65,49 @@ $$a_{ij}(\boldsymbol{x})=C|\boldsymbol{x}|^{\gamma}(|\boldsymbol{x}|^2\delta_{ij
 - `Xmax` or `Vmax` gives the computational domain which is the hypercube centered at the origin               
 $[\mbox{Xmax},\mbox{Xmax}]^d$ or $[\mbox{Vmax},\mbox{Vmax}]^d$. These variables are chosen by the user.
 - `dx` or `dv` is cell length so that the cell volume is $dx^d$ or $dv^d$, and is computed with
-```matlab
-dx = 2*Xmax/n
-```
-```matlab
-dv = 2*Vmax/n
-```
+    ```matlab
+    dx = 2*Xmax/n
+    ```
+    ```matlab
+    dv = 2*Vmax/n
+    ```
 - The particle locations are initialized at the cell centers and for 1D examples we have
-```matlab
-x = (-Xmax+dx/2):dx:(Xmax-dx/2);
-```
+    ```matlab
+    x = (-Xmax+dx/2):dx:(Xmax-dx/2);
+    ```
 and for 2D examples we use
-```matlab
-v = (-Vmax+dv/2):dv:(Vmax-dv/2);
-[vx,vy] = ndgrid(v);
-Vx = vx(:);
-Vy = vy(:);
-```
+    ```matlab
+    v = (-Vmax+dv/2):dv:(Vmax-dv/2);
+    [vx,vy] = ndgrid(v);
+    Vx = vx(:);
+    Vy = vy(:);
+    ```
 to create two arrays `Vx` and `Vy` which contain the corrdinates of the particles the $x$ and $y$ 
 direction.
 - `t0` is the initial time and chosen by the user.
 - `f0` or `f_initial` are the initial conditions which are computed using the `exact.m`, `exact_2d.m`, or `non_bkw_initial_conditions.m` functions.  
 - `w` are the particle weights and they are initialized using the midpoint rule.  In the 2D examples `W = w(:)` flattens the `w` array so that `W` is the same size as the `Vx` and `Vy` arrays. 
 - To create the "blob solution" (equation 4.1), the reconstruction mesh is created.  For 1D exampels
-```matlab
-Nr = n;
-dxr = 2*Xmax/n; 
-xr = (-Xmax+dxr/2):dxr:(Xmax-dxr/2); 
-```
+    ```matlab
+    Nr = n;
+    dxr = 2*Xmax/n; 
+    xr = (-Xmax+dxr/2):dxr:(Xmax-dxr/2); 
+    ```
    
 and for 2D examples
-```matlab
-Nr = n;
-dvr = 2*Vmax/Nr;
-vr = (-Vmax+dvr/2):dvr:(Vmax-dvr/2); 
-[vrx,vry] = ndgrid(vr);
-Vrx = vrx(:);
-Vry = vry(:);
-```
+    ```matlab
+    Nr = n;
+    dvr = 2*Vmax/Nr;
+    vr = (-Vmax+dvr/2):dvr:(Vmax-dvr/2); 
+    [vrx,vry] = ndgrid(vr);
+    Vrx = vrx(:);
+    Vry = vry(:);
+    ```
 Creating this reference mesh is required to compute the errors or plot the blob solution.
 - Once the meshsize `dx` or `dv` is choses the regularization parameter $\epsilon$ is chosen to be
-```matlab
-epsilon = 4*(0.4*(dv)^0.99)^2;
-```
+    ```matlab
+    epsilon = 4*(0.4*(dv)^0.99)^2;
+    ```
 - The initial "reconstructed or blob solution" can then be calculated using the formula $$\sum^N_{p=1} w_p\varphi_{\varepsilon}(\boldsymbol{x} - \boldsymbol{x}_p).$$
 ####   The `psi_1d` and `psi_2d` functions
 - The arguments for the `psi_1d` are
@@ -120,20 +120,20 @@ epsilon = 4*(0.4*(dv)^0.99)^2;
   $$\varphi_{\varepsilon}(\boldsymbol{x}) = \frac{1}{2 \pi \varepsilon}\exp{\left(\frac{-|\boldsymbol{x}^2|}{2 \varepsilon}\right)},$$
   evauluated at the corresponding entry of `x` or `vx` and `vy` with the parameter `eps`.
   
-```matlab
-f = zeros(1,Nr);
-for i = 1:Nr
-    f(i) = sum(w.*psi_1d(xr(i)-x,epsilon));
-end
-```
-and in 2D
-```matlab
-parfor i = 1:Nr
-    for j = 1:Nr
-        f(i,j) = sum(W.*psi_2d(vrx(i,j)-Vx,vry(i,j)-Vy,epsilon));
+    ```matlab
+    f = zeros(1,Nr);
+    for i = 1:Nr
+        f(i) = sum(w.*psi_1d(xr(i)-x,epsilon));
     end
-end
-```
+    ```
+and in 2D
+    ```matlab
+    parfor i = 1:Nr
+        for j = 1:Nr
+            f(i,j) = sum(W.*psi_2d(vrx(i,j)-Vx,vry(i,j)-Vy,epsilon));
+        end
+    end
+    ```
 - `tmax` is the final time and is chosen by the user.
 - `dt` is the time step and is chosen by the user.
 - `Nt` is the number of time steps
@@ -208,16 +208,16 @@ time = t0+dt*nt
   $$\overline{\nabla_{\boldsymbol{x}_p}E\_{A/L}^{\varepsilon}}\left(\boldsymbol{X}^{n},\boldsymbol{X}^n\right) = \nabla\_{\boldsymbol{x}_p}E^{\varepsilon}\_{A/L}(\boldsymbol{X}^n)$$
 
 - For the 1D examples this is 
-  ```matlab
-  dF = right_hand_side(w,x,x,xr,dx,epsilon,n);
-  xnew = x - dt*dF;
-  ```
+    ```matlab
+    dF = right_hand_side(w,x,x,xr,dx,epsilon,n);
+    xnew = x - dt*dF;
+    ```
 - For the 2D examples this is
-  ```matlab
-  [U_x,U_y,gF_x,gF_y,dissipation] = right_hand_side_parallel(W,Vx,Vy,Vx,Vy,Vrx,Vry,dv,epsilon,C_gamma,gamma,Np);
-  Vx_new = Vx + dt*U_x;
-  Vy_new = Vy + dt*U_y;
-  ```
+    ```matlab
+    [U_x,U_y,gF_x,gF_y,dissipation] = right_hand_side_parallel(W,Vx,Vy,Vx,Vy,Vrx,Vry,dv,epsilon,C_gamma,gamma,Np);
+    Vx_new = Vx + dt*U_x;
+    Vy_new = Vy + dt*U_y;
+    ```
 - The fixed point iteration loop begins by defining `x_old` or `vx_old` and `vy_old` so that the relative error in the fixed point iteration can be calculated later on 
   ```matlab
   x_old = x_new;
