@@ -15,7 +15,7 @@ There are five directories in this repository, four of them are aggregation-diff
 3. `particle_method_1D_linear_fokker_planck_discrete_gradient` (example 4.3)
 4. `particle_method_1D_non_local_fokker_planck_discrete_gradient` (example 4.4)
 
-The fifth directory Discrete_Gradient_Symmetric_reg, contains two subdirectories, which correspond to examples 4.5 and 4.6:
+The fifth directory `Discrete_Gradient_Symmetric_reg`, contains two subdirectories, which correspond to examples 4.5 and 4.6:
 
 1. `Discrete_Gradient_Symmetric_reg` (example 4.5)
 2. `Anisotropic_solution_with_Coulomb_potential` (example 4.6)
@@ -240,6 +240,43 @@ Vx_new = Vx + dt*U_x;
 Vy_new = Vy + dt*U_y;
 ```
     
+- Using `x_old` and `x_new` (`Vx_old`, `Vy_old`, `Vx_new`, and `Vy_new` in the 2D exampels), the absolute error and relative error are computed and saved to `absres` and `relres` in 1D this is 
+```matlab
+absres = sqrt(sum((xnew - x_old).^2));
+relres = absres/(sqrt(sum(xnew.^2)));
+```
+in 2D this is 
+
+```matlab
+absres = sqrt(sum((Vx_new - Vx_old).^2 + (Vy_new - Vy_old).^2));
+relres = absres/(sqrt(sum(Vx_new.^2 + Vy_new.^2)));
+```
+
+- Using `relres` and `tol`, an `if` statement is used to determine if the relative error meets the stopping criterion.  If `relres` is less than `tol` the fixed point iteration loop breaks and value of the index variable `i` is saved to the variable `numiter` which is later saved as an entry of the array `error_list`.  If the value of the index variable `i` ever is equal to `max_iter` then the time `time` and `relres` is saved in the array `Fixed_Point_list`
+```matlab
+if relres < tol
+    disp(['fixed point iteration took ',num2str(i),' iterations at time ', num2str(time)])
+    numiter = i;
+    break
+end
+if i == max_iter
+    Fixed_Point_list(nt,1) = time;
+    Fixed_Point_list(nt,2) = relres;
+    disp(['maximum number of iterations reached at time ',num2str(time)])
+    numiter = i;
+end
+```
+
+-  The fixed point iteration loop is complete and the particle locations are updated in 1D
+```matlab
+x = xnew;
+```
+and in 2D
+```matlab
+Vx = Vx_new;
+Vy = Vy_new;
+```
+
 
 
 
