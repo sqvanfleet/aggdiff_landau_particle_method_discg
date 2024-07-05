@@ -171,7 +171,8 @@ time = t0+dt*nt
     - `n` is the number of particles
     - the `right_hand_side` function in the `particle_method_1D_porous_medium_discrete_gradient` uses an additional argument `m` and represents the constant from the porous medium equation.
       
-- The output is an array `gF` that computes the discrete gradient
+- The output of `right_hand_side` is:
+    -  an array `gF` that is the discrete gradient
   $$-\frac{1}{w_p}\nabla_{\boldsymbol{x}_p}\overline{E_A^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{A}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
   and is approximated with a with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
 
@@ -188,6 +189,13 @@ time = t0+dt*nt
     - `C_gamma` is the $C$ parameter from the Landau equation 
     - `gamma` is the $gamma$ parameter from the Landau equation
     - `Np` is the number of particles
+
+- The outputs of `right_hand_side_parallel` are:
+    - arrays `U_x` and `U_y`  that is the discrete gradient
+  $$-\frac{1}{w_p}\nabla_{\boldsymbol{x}_p}\overline{E_L^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{L}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
+  and is approximated with a with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
+
+
 
     
 
