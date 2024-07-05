@@ -155,10 +155,6 @@ end
 time = t0+dt*nt
 ```
 
-- The next for loop is the loop that preforms fixed point iteration that approximates the solution to the
-  system resulting from the discrete gradient integrator.  This loop variable is `i` and goes from 1 to `max_iter` and represents the
-  index of the fixed point iteration
-
 #### `right_hand_side` or `right_hand_side_parallel` functions
 
 - The arguments for the `right_hand_side` function are
@@ -172,8 +168,8 @@ time = t0+dt*nt
     - the `right_hand_side` function in the `particle_method_1D_porous_medium_discrete_gradient` uses an additional argument `m` and represents the constant from the porous medium equation.
       
 - The output of `right_hand_side` is:
-    -  an array `gF` that is the discrete gradient
-  $$-\frac{1}{w_p}\nabla_{\boldsymbol{x}_p}\overline{E_A^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{A}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
+    -  array `gF` is the discrete gradient
+  $$-\frac{1}{w_p}\overline{\nabla_{\boldsymbol{x}_p}E_A^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{A}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
   and is approximated with a with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
 
 - The arguments for the `right_hand_side_parallel` function are
@@ -191,12 +187,38 @@ time = t0+dt*nt
     - `Np` is the number of particles
 
 - The outputs of `right_hand_side_parallel` are:
-    - arrays `U_x` and `U_y`  that is the discrete gradient
-  $$-\frac{1}{w_p}\nabla_{\boldsymbol{x}_p}\overline{E_L^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{L}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
+    - arrays `U_x` and `U_y`  are the discrete gradient
+  $$-\frac{1}{w_p}\overline{\nabla_{\boldsymbol{x}_p}E_L^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{L}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
   and is approximated with a with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
 
+    - arrays `gF_x` and `gF_y` are the quantites used to calculate the fisher information
+      $$F^{\varepsilon}(f^N) = \sum_{p = 1}^N\frac{1}{w_p}\left| \overline{\nabla_{\boldsymbol{x}_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n) \right|^2$$
+
+    - arrays `dissipation` is used to track the energy dissipation term
+      
+  $$D^{\varepsilon}(f^N) = -\frac{1}{2}\sum_{p,q=1}^N w_p w_q \left(\frac{\overline{\nabla_{\boldsymbol{x}\_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_p} - \frac{\overline{\nabla_{\boldsymbol{x}\_q} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_q}\right)A(\overline{\boldsymbol{x}\_p^n}-\overline{\boldsymbol{x}\_q^n})\left(\frac{\overline{\nabla_{\boldsymbol{x}\_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_p} - \frac{\overline{\nabla_{\boldsymbol{x}\_q} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_q}\right).$$
 
 
+- The next for loop in the `particle_method` or `particle_method_2d_parallel` scripts is the loop that preforms fixed point iteration that approximates the solution to the
+  system resulting from the discrete gradient integrator.  This loop variable is `i` and goes from 1 to `max_iter` and represents the
+  index of the fixed point iteration.
+
+- Before this loop begins, the `right_hand_side` and `right_hand_side_parallel` functions are used to preduce a
+  forward Euler initial guess.  This works because of the discrete gradient property
+  $$\overline{\nabla_{\boldsymbol{x}_p}E\_{A/L}^{\varepsilon}}\left(\boldsymbol{X}^{n},\boldsymbol{X}^n\right) = \nabla\_{\boldsymbol{x}_p}E^{\varepsilon}\_{A/L}(\boldsymbol{X}^n)$$
+
+- For the 1D examples this is 
+  ```matlab
+  dF = right_hand_side(w,x,x,xr,dx,epsilon,n);
+  xnew = x - dt*dF;
+  ```
+- For the 2D examples this is
+  ```matlab
+  [U_x,U_y,gF_x,gF_y,dissipation] = right_hand_side_parallel(W,Vx,Vy,Vx,Vy,Vrx,Vry,dv,epsilon,C_gamma,gamma,Np);
+  Vx_new = Vx + dt*U_x;
+  Vy_new = Vy + dt*U_y;
+  ```
+- Now the fixed point iteration loop begins, 
     
 
 
