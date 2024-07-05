@@ -276,6 +276,108 @@ and in 2D
 Vx = Vx_new;
 Vy = Vy_new;
 ```
+- With the updated particle locations, the blob solution is constructed
+
+```matlab
+for i = 1:Nr
+    f(i) = sum(w.*psi_1d(xr(i)-x,epsilon));
+end
+```
+or 
+```matlab
+parfor i = 1:Nr
+    for j = 1:Nr
+        f(i,j) = sum(W.*psi_2d(vrx(i,j)-Vx,vry(i,j)-Vy,epsilon));
+    end
+end
+```
+Using the particle locations and particle weights, the blob solution at the current time is computed and overwritten into `f`
+
+For the 1D examples 
+```matlab
+for i = 1:Nr
+    f(i) = sum(w.*psi_1d(xr(i)-x,epsilon));
+end
+```
+and for the 2D examples
+```matlab
+parfor i = 1:Nr
+    for j = 1:Nr
+        f(i,j) = sum(W.*psi_2d(vrx(i,j)-Vx,vry(i,j)-Vy,epsilon));
+    end
+end
+```
+
+#### The `exact` and `exact_2d` fucntions
+
+- The energy dissipation, fixed point iteration information, and any important conserved quantites are computed and saved to error_list.  The computation of the errors rely on the `exact` or `exact_2d` functions to compute the exact function sampled on the reference mesh.  In one dimension this is done with the following code:
+
+```matlab
+f_exact = exact(time,xr);
+error_list(nt,1) = time;
+f_error = f-f_exact;
+
+%relative error
+Linf_error = max(abs(f_error))/max(abs(f_exact));
+L1_error = sum(abs(f_error))/sum(abs(f_exact));
+L2_error = sqrt(sum(f_error.^2)/sum(f_exact.^2));
+error_list(nt,2) = Linf_error;
+error_list(nt,3) = L1_error;
+error_list(nt,4) = L2_error;
+
+rho = sum(w);
+inside = zeros(1,n);
+for i = 1:n
+    inside(i) = sum(w.*psi_1d(xr(i)-x,epsilon));
+end
+eta = dx*sum(inside.*log(inside));
+error_list(nt,5) = rho;
+error_list(nt,6) = eta;
+```
+
+In the 2D BKW case, the errors are computed since there is an exact solution to compare with.  In the Coulomb case the error is not computed.
+```matlab
+f_error = f-f_exact;
+% relative error
+Linf_error = max(max(abs(f_error)))/max(max(abs(f_exact)));
+L1_error = sum(sum(abs(f_error)))/sum(sum(abs(f_exact)));
+L2_error = sqrt(sum(sum(f_error.^2))/sum(sum(f_exact.^2)));   
+error_list(nt,2) = Linf_error;   
+error_list(nt,3) = L1_error;   
+error_list(nt,4) = L2_error;
+
+% moments
+rho = sum(W);
+m1 = sum(W.*Vx);
+m2 = sum(W.*Vy);
+E = sum(W.*(Vx.^2+Vy.^2));   
+F = zeros(Nr^2,1);
+% parfor for i
+parfor i = 1:Nr^2
+    F(i) = sum(W.*psi_2d(Vrx(i)-Vx,Vry(i)-Vy,epsilon));
+end
+%compute the fisher information 
+term1_x = zeros(Np,1);
+term1_y = zeros(Np,1);
+for i = 1:Np %compute fisher information and dissipation terms
+    % at time t = t0 + nt*dt
+    [A,B] = gpsi_2d(Vx(i)-Vrx,Vy(i)-Vry,epsilon);
+    term1_x(i) = dv^2*sum(A.*log(F));
+    term1_y(i) = dv^2*sum(B.*log(F));
+
+end
+Fish = sum(W.*(term1_x.^2 + term1_y.^2)); %fisher information 
+eta = dv^2*sum(F.*log(F));
+eta1 = dv^2*sum(F.*(log(F)+log(2*pi)+(Vrx.^2+Vry.^2)/2));
+error_list(nt,5) = rho;   
+error_list(nt,6) = m1;   
+error_list(nt,7) = m2;
+error_list(nt,8) = E;  
+error_list(nt,9) = eta;  
+error_list(nt,10) = eta1;
+error_list(nt,11) = Fish;
+error_list(nt,12) = dissipation;
+```
 
 
 
