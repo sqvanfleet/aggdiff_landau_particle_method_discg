@@ -310,6 +310,20 @@ end
 
 #### The `exact` and `exact_2d` fucntions
 
+- The arguments for the `exact` function are:
+    - `x` is an array of locations where the exact solution is sampled at
+    - `t` is the current time
+    - `m` is an argument if you are working with the porous medium example
+- The output of `exact` is
+    - `f` an array of the exact solution sampled at `t` and `x`.
+
+- The arguments for the `exact_2d` function are:
+  - `vx` is an array of $x$ coordinate locations where the exact solution is sampled at
+  - `vy` is an array of $y$ coordinate locations where the exact solution is sampled at
+  - `t` is the current time
+- The output of `exact_2d` is
+  - `f` an array of the exact solution sampled at `t` and `vx` and `vy`.
+
 - The energy dissipation, fixed point iteration information, and any important conserved quantites are computed and saved to error_list.  The computation of the errors rely on the `exact` or `exact_2d` functions to compute the exact function sampled on the reference mesh.  In one dimension this is done with the following code:
 
 ```matlab
