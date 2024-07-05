@@ -194,7 +194,7 @@ time = t0+dt*nt
     - arrays `gF_x` and `gF_y` are the quantites used to calculate the fisher information
       $$F^{\varepsilon}(f^N) = \sum_{p = 1}^N\frac{1}{w_p}\left| \overline{\nabla_{\boldsymbol{x}_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n) \right|^2$$
 
-    - arrays `dissipation` is used to track the energy dissipation term
+    - `dissipation` is used to track the energy dissipation term
       
   $$D^{\varepsilon}(f^N) = -\frac{1}{2}\sum_{p,q=1}^N w_p w_q \left(\frac{\overline{\nabla_{\boldsymbol{x}\_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_p} - \frac{\overline{\nabla_{\boldsymbol{x}\_q} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_q}\right)A(\overline{\boldsymbol{x}\_p^n}-\overline{\boldsymbol{x}\_q^n})\left(\frac{\overline{\nabla_{\boldsymbol{x}\_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_p} - \frac{\overline{\nabla_{\boldsymbol{x}\_q} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_q}\right).$$
 
@@ -218,7 +218,27 @@ time = t0+dt*nt
   Vx_new = Vx + dt*U_x;
   Vy_new = Vy + dt*U_y;
   ```
-- Now the fixed point iteration loop begins, 
+- The fixed point iteration loop begins by defining `x_old` or `vx_old` and `vy_old` so that the relative error in the fixed point iteration can be calculated later on 
+  ```matlab
+  x_old = x_new;
+  ```
+  or
+  ```matlab
+  Vx_old = Vx_new;
+  Vy_old = Vy_old;
+  ```
+
+- Using the `right_hand_side` or `right_hand_side_parallel` functions, calculate overwrite `x_new` or `Vx_new` and `Vy_new` with a iteration of fixed point method
+  ```matlab
+  gF = right_hand_side(w,x,xnew,xr,dx,epsilon,n);
+  xnew = x - dt*gF;
+  ```
+  or
+  ```matlab
+  [U_x,U_y,gF_x,gF_y,dissipation] = right_hand_side_parallel(W,Vx,Vy,Vx_new,Vy_new,Vrx,Vry,dv,epsilon,C_gamma,gamma,Np);
+  Vx_new = Vx + dt*U_x;
+  Vy_new = Vy + dt*U_y;
+  ```
     
 
 
