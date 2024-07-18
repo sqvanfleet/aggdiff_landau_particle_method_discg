@@ -20,34 +20,34 @@ The fifth directory `Discrete_Gradient_Symmetric_reg`, contains two subdirectori
 1. `Discrete_Gradient_Symmetric_reg` (example 4.5)
 2. `Anisotropic_solution_with_Coulomb_potential` (example 4.6)
 
-Each of the six directories listed above contain two subdirecties:
+Each of the six directories listed above contain two subdirectories:
 1. `Plots` this directory stores all the plots created by the `plots.m` file 
 2. `Data` this directory stores all of the data saved from the `particle_method.m` or `particle_method_2d_parallel.m` file
 
 and the .m files:
-1. `particle_method.m` or `particle_method_2d_parallel.m` the main script that preforms the computations and saves data to the `Data` directory
+1. `particle_method.m` or `particle_method_2d_parallel.m` the main script that performs the computations and saves data to the `Data` directory
     that is then analyzed with the `plots.m` file
-3. `gpsi_1d.m` or `gpsi_2d.m` functions for the mollifier funtion $\varphi_{\varepsilon}(\boldsymbol{x})$
+3. `gpsi_1d.m` or `gpsi_2d.m` functions for the mollifier function $\varphi_{\varepsilon}(\boldsymbol{x})$
 4. `right_hand_side.m` or `right_hand_side_parallel.m` a matlab function that computes the right hand side of the fixed point
    iteration method that results from the discrete gradient discretization.  
 5. `plots.m` takes data from `Data` and produces pdf plots that are saved in `Plots`
 6. `exact.m` or `exact_2d.m` or `non_bkw_initial_conditions.m` functions for the exact solution for the given example or for example 4.6
    a function for the initial conditions
-8. `lgwt.m` a function that returns the wights and nodes required for the Gauss-Legendre quadrature.  This can be downloaded at
+8. `lgwt.m` is a function that returns the weights and nodes required for the Gauss-Legendre quadrature.  This can be downloaded at
    at [MATLAB file exchange](https://www.mathworks.com/matlabcentral/fileexchange/4540-legendre-gauss-quadrature-weights-and-nodes).
 
 ## MATLAB requirements
 
-All of the files in this repository were tested on MATLAB version R2022b.  The examples coressponding to the Landau equation require the [Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html), but can be modified to be used in serial. 
+All of the files in this repository were tested on MATLAB version R2022b.  The examples corresponding to the Landau equation require the [Parallel Computing Toolbox](https://www.mathworks.com/products/parallel-computing.html), but can be modified to be used in serial. 
 
-## Project discription
+## Project description
 
 ### `particle_method.m` or `particle_method_2d_parallel.m` scripts
 
 #### Parameters, initialization, and mesh generation
 
 - The `particle_method.m` or `particle_method_2d_parallel.m` scripts begin by defining several parameters including:
-- `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of this array are chosen by the user.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outer most loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
+- `n_list` which is a matrix whose elements are how many particles you want to calculate the particle method solution with.  The entries of this array are chosen by the user.  The entries of `n_list` correspond to different values of $M$ from the paper, making the total number of particles $M^d$, where $d$ is the number of spatial dimensions.  The outermost loop in `particle_method.m` or `particle_method_2d_parallel.m` uses the loop variable `alpha` and loops over all values in `n_list`.  For each iteration of this loop the number of particles is
 ```matlab
 n = n_list(alpha);
 ```
@@ -59,7 +59,7 @@ is the number of particles.
 
 - The porous medium example uses an additional parameter `m` which is the constant from the porous medium equation.
 
-- Landau equation examples have two additional parameters `gamma` and `C_gamma`, which are parameters representing the collision kernal 
+- Landau equation examples have two additional parameters `gamma` and `C_gamma`, which are parameters representing the collision kernel 
 $$a_{ij}(\boldsymbol{x})=C|\boldsymbol{x}|^{\gamma}(|\boldsymbol{x}|^2\delta_{ij}-x_ix_j)$$
 
 - `Xmax` or `Vmax` gives the computational domain which is the hypercube centered at the origin               
@@ -82,12 +82,12 @@ v = (-Vmax+dv/2):dv:(Vmax-dv/2);
 Vx = vx(:);
 Vy = vy(:);
 ```
-to create two arrays `Vx` and `Vy` which contain the corrdinates of the particles the $x$ and $y$ 
+to create two arrays `Vx` and `Vy` which contain the coordinates of the particles the $x$ and $y$ 
 direction.
 - `t0` is the initial time and chosen by the user.
 - `f0` or `f_initial` are the initial conditions which are computed using the `exact.m`, `exact_2d.m`, or `non_bkw_initial_conditions.m` functions.  
 - `w` are the particle weights and they are initialized using the midpoint rule.  In the 2D examples `W = w(:)` flattens the `w` array so that `W` is the same size as the `Vx` and `Vy` arrays. 
-- To create the "blob solution" (equation 4.1), the reconstruction mesh is created.  For 1D exampels
+- To create the "blob solution" (equation 4.1), the reconstruction mesh is created.  For 1D examples
 ```matlab
 Nr = n;
 dxr = 2*Xmax/n; 
@@ -104,7 +104,7 @@ Vrx = vrx(:);
 Vry = vry(:);
 ```
 Creating this reference mesh is required to compute the errors or plot the blob solution.
-- Once the meshsize `dx` or `dv` is choses the regularization parameter $\epsilon$ is chosen to be
+- Once the mesh size `dx` or `dv` is choses the regularization parameter $\epsilon$ is chosen to be
 ```matlab
 epsilon = 4*(0.4*(dv)^0.99)^2;
 ```
@@ -116,9 +116,9 @@ epsilon = 4*(0.4*(dv)^0.99)^2;
 - The arguments for `psi_2d` are
     - `vx`, `vy`, represent the 2D mesh
     - `eps` represents the regularization parameter.
-- These funtions return an array the same size as `x` or `vx` and `vy`.  Each entry of the retuned array is the mollifier function
+- These functions return an array the same size as `x` or `vx` and `vy`.  Each entry of the returned array is the mollifier function
   $$\varphi_{\varepsilon}(\boldsymbol{x}) = \frac{1}{2 \pi \varepsilon}\exp{\left(\frac{-|\boldsymbol{x}^2|}{2 \varepsilon}\right)},$$
-  evauluated at the corresponding entry of `x` or `vx` and `vy` with the parameter `eps`.
+  evaluated at the corresponding entry of `x` or `vx` and `vy` with the parameter `eps`.
   
 ```matlab
 f = zeros(1,Nr);
@@ -143,8 +143,8 @@ end
 - `error_list` is an array that stores several quantities at each time step such as errors, mass, momentum, kinetic energy,
    energy, the dissipation term, fisher energy, and how many fixed point iterations were required for the relative error to
    be less than the given tolerance.
-- `max_iter` is the maximum amount of iterations the fixed point iteration can preform and is chosen by the user.
-- `tol` is the tolerence used in the fixed point iteration and is chosen by the user.
+- `max_iter` is the maximum number of iterations the fixed point iteration can perform and is chosen by the user.
+- `tol` is the tolerance used in the fixed point iteration and is chosen by the user.
 
 #### For loop in time
 
@@ -159,7 +159,7 @@ time = t0+dt*nt
 
 - The arguments for the `right_hand_side` function are
     - `w` represents the 1D wights 
-    - `x` represents the 1D particle logations at the fixed point iteration `i`
+    - `x` represents the 1D particle locations at the fixed point iteration `i`
     - `x_new` represents the particle locations at the fixed point iteration `i+1`
     - `xr` represents the 1D reference mesh
     - `dx` is the length of the reference mesh elements.  
@@ -170,7 +170,7 @@ time = t0+dt*nt
 - The output of `right_hand_side` is:
     -  array `gF` is the discrete gradient
   $$-\frac{1}{w_p}\overline{\nabla_{\boldsymbol{x}_p}E_A^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{A}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
-  and is approximated with a with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
+  and is approximated with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
 
 - The arguments for the `right_hand_side_parallel` function are
     - `W` represents the particle weights
@@ -189,9 +189,9 @@ time = t0+dt*nt
 - The outputs of `right_hand_side_parallel` are:
     - arrays `U_x` and `U_y`  are the discrete gradient
   $$-\frac{1}{w_p}\overline{\nabla_{\boldsymbol{x}_p}E_L^{\varepsilon}}\left(\boldsymbol{X}^{n+1},\boldsymbol{X}^n\right) = \int_0^1 \nabla\_{\boldsymbol{x}_p} E\_{L}^{\varepsilon}\left(\boldsymbol{X}^n+s(\boldsymbol{X}^{n+1}-\boldsymbol{X}^n)\right)\mathrm{d}s,$$
-  and is approximated with a with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
+  and is approximated with a 4 point Gauss-Legendre quadrature using the `lgwt` function.
 
-    - arrays `gF_x` and `gF_y` are the quantites used to calculate the fisher information
+    - arrays `gF_x` and `gF_y` are the quantities used to calculate the fisher information
       $$F^{\varepsilon}(f^N) = \sum_{p = 1}^N\frac{1}{w_p}\left| \overline{\nabla_{\boldsymbol{x}_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n) \right|^2$$
 
     - `dissipation` is used to track the energy dissipation term
@@ -199,11 +199,11 @@ time = t0+dt*nt
   $$D^{\varepsilon}(f^N) = -\frac{1}{2}\sum_{p,q=1}^N w_p w_q \left(\frac{\overline{\nabla_{\boldsymbol{x}\_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_p} - \frac{\overline{\nabla_{\boldsymbol{x}\_q} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_q}\right)A(\overline{\boldsymbol{x}\_p^n}-\overline{\boldsymbol{x}\_q^n})\left(\frac{\overline{\nabla_{\boldsymbol{x}\_p} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_p} - \frac{\overline{\nabla_{\boldsymbol{x}\_q} E_L^{\varepsilon}}(\boldsymbol{X}^{n+1},\boldsymbol{X}^n)}{w_q}\right).$$
 
 
-- The next for loop in the `particle_method` or `particle_method_2d_parallel` scripts is the loop that preforms fixed point iteration that approximates the solution to the
+- The next for loop in the `particle_method` or `particle_method_2d_parallel` scripts is the loop that performs fixed point iteration that approximates the solution to the
   system resulting from the discrete gradient integrator.  This loop variable is `i` and goes from 1 to `max_iter` and represents the
   index of the fixed point iteration.
 
-- Before this loop begins, the `right_hand_side` and `right_hand_side_parallel` functions are used to preduce a
+- Before this loop begins, the `right_hand_side` and `right_hand_side_parallel` functions are used to produce a
   forward Euler initial guess.  This works because of the discrete gradient property
   $$\overline{\nabla_{\boldsymbol{x}_p}E\_{A/L}^{\varepsilon}}\left(\boldsymbol{X}^{n},\boldsymbol{X}^n\right) = \nabla\_{\boldsymbol{x}_p}E^{\varepsilon}\_{A/L}(\boldsymbol{X}^n)$$
 
@@ -252,7 +252,7 @@ absres = sqrt(sum((Vx_new - Vx_old).^2 + (Vy_new - Vy_old).^2));
 relres = absres/(sqrt(sum(Vx_new.^2 + Vy_new.^2)));
 ```
 
-- Using `relres` and `tol`, an `if` statement is used to determine if the relative error meets the stopping criterion.  If `relres` is less than `tol` the fixed point iteration loop breaks and value of the index variable `i` is saved to the variable `numiter` which is later saved as an entry of the array `error_list`.  If the value of the index variable `i` ever is equal to `max_iter` then the time `time` and `relres` is saved in the array `Fixed_Point_list`
+- Using `relres` and `tol`, an `if` statement is used to determine if the relative error meets the stopping criterion.  If `relres` is less than `tol` the fixed point iteration loop breaks and the value of the index variable `i` is saved to the variable `numiter` which is later saved as an entry of the array `error_list`.  If the value of the index variable `i` ever is equal to `max_iter` then the time `time` and `relres` is saved in the array `Fixed_Point_list`
 ```matlab
 if relres < tol
     disp(['fixed point iteration took ',num2str(i),' iterations at time ', num2str(time)])
@@ -308,7 +308,7 @@ parfor i = 1:Nr
 end
 ```
 
-#### The `exact` and `exact_2d` fucntions
+#### The `exact` and `exact_2d` functions
 
 - The arguments for the `exact` function are:
     - `x` is an array of locations where the exact solution is sampled at
@@ -322,9 +322,9 @@ end
   - `vy` is an array of $y$ coordinate locations where the exact solution is sampled at
   - `t` is the current time
 - The output of `exact_2d` is
-  - `f` an array of the exact solution sampled at `t` and `vx` and `vy`.
+  - `f` is an array of the exact solution sampled at `t` and `vx` and `vy`.
 
-- The energy dissipation, fixed point iteration information, and any important conserved quantites are computed and saved to error_list.  The computation of the errors rely on the `exact` or `exact_2d` functions to compute the exact function sampled on the reference mesh.  In one dimension this is done with the following code:
+- The energy dissipation, fixed point iteration information, and any important conserved quantities are computed and saved to error_list.  The computation of the errors rely on the `exact` or `exact_2d` functions to compute the exact function sampled on the reference mesh.  In one dimension this is done with the following code:
 
 ```matlab
 f_exact = exact(time,xr);
@@ -397,12 +397,13 @@ error_list(nt,12) = dissipation;
 To reproduce the results given in section 4 of the paper, open and run the 
 `particle_method` or `particle_method_2d_parallel` in the folder corresponding 
 to the example for which you would like to reproduce results (see contents listed above).  For each entry of `n_list` 
-defined at the begining of `particle_method` or `particle_method_2d_parallel`, a `.mat` file will be saved into the `Data` 
+defined at the beginning of `particle_method` or `particle_method_2d_parallel`, a `.mat` file will be saved into the `Data` 
 directory located in that folder.  Next, open and run the `plots` file to create the plots given in the paper.
 
 
-If you would like to alter the parameters listed oulined in the project description section above, run the `particle_method` 
+If you would like to alter the parameters listed outlined in the project description section above, run the `particle_method` 
 `particle_method_2d_parallel` files which will save `.mat` files to the data `Data` repository.  Depending on what parameters are altered, the title of the `.mat` file that is saved in `Data` may not match the title that is loaded in `plots` and thus you may need 
 to alter the argument of `load()` to match this saved file.
+
 
 
