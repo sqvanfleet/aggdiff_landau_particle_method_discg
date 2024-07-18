@@ -401,6 +401,8 @@ defined at the begining of `particle_method` or `particle_method_2d_parallel`, a
 directory located in that folder.  Next, open and run the `plots` file to create the plots given in the paper.
 
 
-
+If you would like to alter the parameters listed oulined in the project description section above, run the `particle_method` 
+`particle_method_2d_parallel` files which will save `.mat` files to the data `Data` repository.  Depending on what parameters are altered, the title of the `.mat` file that is saved in `Data` may not match the title that is loaded in `plots` and thus you may need 
+to alter the argument of `load()` to match this saved file.
 
 
