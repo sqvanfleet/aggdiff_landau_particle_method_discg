@@ -9,11 +9,14 @@ This repository includes the MATLAB code for each numerical example given in sec
 
 ## Contents 
 
-There are five directories in this repository, four of them are aggregation-diffusion equation examples, which correspond to examples 4.1 - 4.4:
+There are eight directories in this repository, seven of them are aggregation-diffusion equation examples, which correspond to examples 4.1 - 4.4:
 1. `particle_method_1D_heat_equation_discrete_gradient` (example 4.1)
-2. `particle_method_1D_porous_medium_discrete_gradient` (example 4.2)
-3. `particle_method_1D_linear_fokker_planck_discrete_gradient` (example 4.3)
-4. `particle_method_1D_non_local_fokker_planck_discrete_gradient` (example 4.4)
+2. `particle_method_1D_heat_equation_discrete_gradient_Adams_Bashford_2` (example 4.1 but results are omitted from the paper)
+3. `particle_method_1D_heat_equation_discrete_gradient_Adams_Bashford_4` (example 4.1 but results are omitted from the paper)
+4. `particle_method_1D_heat_equation_discrete_gradient_RK4` (example 4.1 but results are omitted from the paper)
+5. `particle_method_1D_porous_medium_discrete_gradient` (example 4.2)
+6. `particle_method_1D_linear_fokker_planck_discrete_gradient` (example 4.3)
+7. `particle_method_1D_non_local_fokker_planck_discrete_gradient` (example 4.4)
 
 The fifth directory `Discrete_Gradient_Symmetric_reg`, contains two subdirectories, which correspond to examples 4.5 and 4.6:
 
